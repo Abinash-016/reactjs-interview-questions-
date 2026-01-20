@@ -2,10 +2,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>React Learning</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<title>React Learn</title>
 
 <!-- Simple clean theme -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
+<link rel="stylesheet" href="styles.css">
 
 <style>
 :root {
@@ -310,12 +313,12 @@
 </div>
 
 
-
 <div id="app"></div>
+
 
 <script>
 window.$docsify = {
-  name: 'React Learning',
+  name: '  ',
   homepage: 'README.md',
   auto2top: true
 }
@@ -394,7 +397,10 @@ onAuthStateChanged(auth, user => {
 
     // show top bar
     bar.style.display = "block";
-    emailBox.innerText = user.email;
+    // show only first 8 chars + ...
+const short = user.email.substring(0, 8) + "...";
+emailBox.innerText = short;
+
 
     // unlock content
     document.getElementById("lock").style.display = "none";
@@ -575,6 +581,8 @@ window.$docsify.plugins = [
       renderGrid(); 
       updateStats(); 
       enableSearch(); 
+
+        loadDiscussion(); 
     });
   }
 ];
@@ -738,6 +746,38 @@ function enableSearch(){
     }
   };
 }
+function loadDiscussion(){
+
+  const area = document.querySelector(".markdown-section");
+  if(!area) return;
+
+  // remove old instance
+  const old = document.getElementById("giscusBox");
+  if(old) old.remove();
+
+  const div = document.createElement("div");
+  div.id = "giscusBox";
+
+  div.innerHTML = `
+    <h3>💬 Discussion</h3>
+
+    <script src="https://giscus.app/client.js"
+        data-repo="Abinash-016/reactjs-interview-questions-"
+        data-repo-id="R_kgDOQ9s9nA"
+        data-category="General"
+        data-category-id="DIC_kwDOQ9s9nM4C1M7H"
+        data-mapping="pathname"
+        data-theme="light"
+        crossorigin="anonymous"
+        async>
+    <\/script>
+  `;
+
+  area.appendChild(div);
+}
+
+
+
 </script>
 <!-- TOP BAR AFTER LOGIN -->
 <div id="topbar" style="
@@ -752,6 +792,7 @@ function enableSearch(){
   font-size:14px;
   z-index:999;
 ">
+
   <span id="userEmail"></span>
   <button onclick="logout()" style="
     margin-left:8px;
@@ -767,11 +808,36 @@ function enableSearch(){
 </div>
 
 <div id="toast" class="toast"></div>
+<script>
+// ===== CONTROL EXISTING TOGGLE =====
+
+setInterval(()=>{
+
+  // Docsify default toggle
+  const btn = document.querySelector(".sidebar-toggle");
+
+  if(!btn) return;
+
+  if(document.body.classList.contains("close")){
+    btn.innerText = "❯";   // sidebar closed
+  }else{
+    btn.innerText = "❮";   // sidebar open
+  }
+
+}, 500);
+</script>
+
+
 <div id="sphere1" class="sphere"></div>
 <div id="sphere2" class="sphere"></div>
 <div id="sphere3" class="sphere"></div>
 
 
+<div class="footer">
+  Crafted with 💙 for React learners<br>
+  Created by Abinash
+</div>
+<div class="hand-character"></div>
 
 </body>
 </html>

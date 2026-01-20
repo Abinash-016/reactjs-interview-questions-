@@ -1,0 +1,249 @@
+/* ===== EDTECH THEME ===== */
+body{
+  font-family: 'Inter', system-ui;
+  background:#f8fafc;
+}
+
+/* Navbar style */
+#searchBox input{
+  width:220px;
+  background:white;
+  border:1px solid #e2e8f0;
+  box-shadow:0 4px 12px rgba(0,0,0,.06);
+}
+
+/* Content card */
+.markdown-section{
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.05);
+  animation: fadeUp .6s ease;
+}
+
+@keyframes fadeUp{
+  from{ transform:translateY(20px); opacity:0 }
+  to{ transform:translateY(0); opacity:1 }
+}
+
+/* Headings */
+h2, h3{
+  color:#0f172a;
+  border-left:4px solid #2563eb;
+  padding-left:10px;
+}
+
+/* Mark button premium */
+.markBtn{
+  background:linear-gradient(135deg,#2563eb,#3b82f6);
+  color:white;
+  transition:.3s;
+}
+
+.markBtn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 16px rgba(37,99,235,.3);
+}
+
+/* Progress bar glass */
+#sideProgress{
+  background:rgba(255,255,255,.6);
+  backdrop-filter:blur(8px);
+  border:1px solid #e2e8f0;
+}
+
+/* Calendar grid modern */
+#calendarBox, #statsBox{
+  background:rgba(255,255,255,.7);
+  backdrop-filter:blur(10px);
+  border:1px solid #e2e8f0;
+}
+
+/* Discussion */
+#giscusBox{
+  margin-top:30px;
+  padding:12px;
+  border-top:1px solid #e2e8f0;
+}
+
+/* Footer */
+.footer{
+  text-align:center;
+  margin:40px 0 10px;
+  color:#64748b;
+  font-size:13px;
+}
+
+
+/* smooth everything */
+*{ scroll-behavior:smooth }
+
+/* nicer inputs */
+input, textarea{
+  outline:none;
+  transition:.2s;
+}
+
+input:focus{
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px rgba(37,99,235,.2);
+}
+
+/* cards feel */
+.lock .box{
+  backdrop-filter:blur(10px);
+  border:1px solid #e2e8f0;
+}
+
+/* ===== RESPONSIVE LAYOUT ===== */
+
+/* Keep content centered on large screens */
+.markdown-section{
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px){
+
+  #sideProgress{
+    right:6px;
+    width:10px;
+    height:160px;
+  }
+
+  #calendarBox,
+  #statsBox{
+    right:6px;
+    transform:scale(.92);
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px){
+
+  .markdown-section{
+    padding:12px;
+    margin:6px;
+  }
+
+  /* Widgets stay visible but smaller */
+  #sideProgress{
+    top:70px;
+    height:120px;
+  }
+
+  #calendarBox{
+    top:210px;
+  }
+
+  #statsBox{
+    top:350px;
+  }
+
+  .markBtn{
+    padding:8px 10px;
+    font-size:14px;
+  }
+}
+/* ===== FIX MOBILE TEXT SIZE ===== */
+
+@media (max-width: 768px){
+
+  body{
+    font-size:16px;        /* base readable size */
+    line-height:1.6;
+  }
+
+  .markdown-section{
+    font-size:16px;
+  }
+
+  h1{ font-size:22px; }
+  h2{ font-size:20px; }
+  h3{ font-size:18px; }
+
+  p, li{
+    font-size:16px;
+  }
+
+  code{
+    font-size:15px;
+  }
+
+  .markBtn{
+    font-size:15px;
+    padding:10px 12px;
+  }
+
+  /* inputs bigger for touch */
+  input, textarea{
+    font-size:16px;
+  }
+}
+
+#userEmail{
+  background:#f1f5f9;
+  padding:4px 8px;
+  border-radius:8px;
+  font-size:13px;
+  max-width:90px;
+  overflow:hidden;
+}
+/* ===== FORCE TOGGLE ICON CHANGE ===== */
+
+/* reset any svg or default icon */
+.sidebar-toggle,
+.sidebar-toggle-button{
+  font-size:0 !important;       /* hide old icon */
+}
+
+/* OPEN STATE → inside */
+.sidebar-toggle::after,
+.sidebar-toggle-button::after{
+  content:"❮" !important;
+  font-size:16px !important;
+  color:#2563eb !important;
+}
+
+/* CLOSED STATE → outside */
+body.close .sidebar-toggle::after,
+body.close .sidebar-toggle-button::after{
+  content:"❯" !important;
+}
+
+/* Make it look like your UI */
+.sidebar-toggle,
+.sidebar-toggle-button{
+  background:white !important;
+  border:1px solid #e2e8f0 !important;
+  border-radius:50% !important;
+
+  width:30px !important;
+  height:30px !important;
+
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+
+  transition:.3s !important;
+}
+#calendarBox,
+#statsBox{
+  position: fixed !important;
+  z-index: 999 !important;
+
+  margin: 16px 20px 16px auto !important;
+  width: 8.5% !important;
+
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+/* push the notes a bit down */
+.markdown-section{
+  margin-top: 24px !important;
+}
