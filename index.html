@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>React Learning</title>
+
+<!-- Simple clean theme -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
+
+<style>
+:root {
+  --base-background-color: #ffffff;
+  --base-color: #24292e;
+  --heading-color: #24292e;
+  --sidebar-background: #f8f8f8;
+  --code-background: #f6f8fa;
+}
+
+/* ===== BEAUTIFUL LOCK SCREEN ===== */
+.lock{
+  position: fixed;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  animation: fade .4s ease;
+}
+
+@keyframes fade{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+.lock .box{
+  background:white;
+  padding:24px;
+  border-radius:14px;
+  width:340px;
+  text-align:center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  font-family: system-ui, -apple-system;
+}
+
+.lock h3{
+  margin:0 0 12px 0;
+  font-weight:600;
+}
+
+.lock input{
+  width:100%;
+  margin:8px 0;
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  font-size:14px;
+}
+
+.lock button{
+  width:100%;
+  margin:6px 0;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.lock button:nth-child(4){
+  background:#2563eb;
+  color:white;
+}
+
+.lock button:nth-child(5){
+  background:#e5e7eb;
+}
+
+#status{
+  font-size:13px;
+  margin-top:8px;
+  color:#555;
+}h2, h3 {
+  transition: color .3s ease;
+}
+
+.toast{
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: white;
+  font-size: 14px;
+  display: none;
+  z-index: 99999;
+  animation: slide .3s ease;
+}
+
+.toast.success{ background: #16a34a; }
+.toast.error{ background: #dc2626; }
+
+@keyframes slide{
+  from{ transform: translateY(40px); opacity:0 }
+  to{ transform: translateY(0); opacity:1 }
+}
+
+.markBtn{
+  border:none;
+  background:#0055ff;
+  padding:4px 6px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:12px;
+}
+
+/* ===== RIGHT SIDE PROGRESS ===== */
+#sideProgress{
+  position:fixed;
+  right:10px;
+  top:80px;
+  width:14px;
+  height:200px;
+  background:#eee;
+  border-radius:20px;
+  z-index:999;
+}
+
+#fill{
+  width:100%;
+  height:0%;
+  background:#22c55e;   /* green */
+  border-radius:20px;
+  transition:height .5s ease;
+}
+
+#percentText{
+  position:absolute;
+  bottom:-22px;
+  left:-8px;
+  font-size:12px;
+}
+
+/* click animation */
+@keyframes wave{
+  0%{ box-shadow:0 0 0 0 rgba(34,197,94,.6); }
+  100%{ box-shadow:0 0 0 12px rgba(34,197,94,0); }
+}
+
+.wave{
+  animation:wave .6s ease;
+}
+
+/* .bubble{
+  position:fixed;
+  width:24px;
+  height:24px;
+  background:#22c55e;
+  border-radius:50%;
+  pointer-events:none;
+  display:none;
+  z-index:9999;
+} */
+ .sphere {
+  animation: 1s linear infinite alternate brightnessChanging;
+  border-radius: 50%;
+
+  /* GREEN BASE COLOR */
+  background: rgba(34, 197, 94, 0.45);
+
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, .3);
+  height: 34px;
+  width: 34px;
+
+  margin: -17px 0 0 -17px;
+  overflow: hidden;
+  position: fixed;
+
+  transform: translateZ(0) rotate(-20deg);
+  display: none;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* shiny top reflection */
+.sphere::before {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  content: '';
+  height: 5px;
+  margin: 5px 0 0px 12px;
+  position: absolute;
+  width: 12px;
+}
+
+/* bottom depth shadow */
+.sphere::after {
+  border-radius: 50%;
+  box-shadow: inset 0 -8px 8px rgba(255, 255, 255, .2);
+  content: '';
+  height: 80%;
+  position: absolute;
+  margin: 15% 0 0 6%;
+  width: 90%;
+}
+
+@keyframes brightnessChanging {
+  from { opacity: 1; }
+  to   { opacity: .78; }
+}
+
+
+@keyframes fly{
+  0%{
+    transform:scale(1);
+  }
+  100%{
+    transform:scale(0.3);
+  }
+}
+
+
+.highlight{
+  background:#ffeb3b;
+  padding:2px 1px;
+  border-radius:3px;
+}
+
+
+</style>
+
+
+</head>
+
+<body>
+
+<!-- ===== LOCK OVERLAY ===== -->
+<div id="lock" class="lock">
+  <div class="box">
+    <h3>Continue Reading for Free</h3>
+
+    <input id="email" placeholder="Email">
+    <input id="pass" type="password" placeholder="Password">
+
+    <button onclick="signup()">Signup</button>
+    <button onclick="login()">Login</button>
+
+    <p id="status"></p>
+  </div>
+</div>
+<div id="sideProgress">
+  <div id="fill"></div>
+  <span id="percentText">0%</span>
+</div>
+
+
+<div id="calendarBox" style="
+  position:fixed;
+  right:10px;
+  top:300px;
+  background:#fff;
+  padding:10px;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+">
+
+  <div style="font-size:12px;margin-bottom:6px">
+    Monthly Streak
+  </div>
+
+  <div id="grid" style="
+    display:grid;
+    grid-template-columns:repeat(7, 12px);
+    gap:4px;
+  "></div>
+
+</div>
+
+<div id="statsBox" style="
+  position:fixed;
+  right:10px;
+  top:460px;
+  background:#fff;
+  padding:10px;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+  font-size:12px;
+">
+  <b>Stats</b>
+
+  <div>Total Topics: <span id="sTotal">0</span></div>
+  <div>Completed: <span id="sDone">0</span></div>
+
+  <div>Time This Week: <span id="weekTime">0m</span></div>
+  <div>Time This Month: <span id="monthTime">0m</span></div>
+</div>
+
+
+<div id="searchBox" style="
+  position:fixed;
+  left:20px;
+  top:10px;
+  z-index:999;
+">
+  <input id="searchInput" placeholder="Search topic..."
+    style="padding:6px 10px;border-radius:8px;border:1px solid #ddd;">
+</div>
+
+
+
+<div id="app"></div>
+
+<script>
+window.$docsify = {
+  name: 'React Learning',
+  homepage: 'README.md',
+  auto2top: true
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
+
+<!-- ===== FIREBASE + LOCK LOGIC ===== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-analytics.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDdhvF3_eLoOhsE2nm8hwx_1qi7ULcXQNU",
+  authDomain: "react-notes-everything.firebaseapp.com",
+  projectId: "react-notes-everything",
+  storageBucket: "react-notes-everything.firebasestorage.app",
+  messagingSenderId: "153960993822",
+  appId: "1:153960993822:web:7edf36629c81b3fa21ca0f",
+  measurementId: "G-TZERJS0XP0"
+};
+
+// Initialize
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth(app);
+
+// ===== SIGNUP =====
+window.signup = () => {
+  const email = document.getElementById("email").value;
+  const pass  = document.getElementById("pass").value;
+
+  createUserWithEmailAndPassword(auth, email, pass)
+    .then(() => showToast("Registered successfully!"))
+    .catch(e => showToast(e.message, "error"));
+};
+
+
+// ===== LOGIN =====
+
+window.login = () => {
+  const email = document.getElementById("email").value;
+  const pass  = document.getElementById("pass").value;
+
+  signInWithEmailAndPassword(auth, email, pass)
+    .then(() => showToast("Logged in!"))
+    .catch(e => showToast(e.message, "error"));
+};
+
+
+// ===== LOGOUT =====
+window.logout = () => signOut(auth);
+
+// ===== SHOW USER STATUS =====
+onAuthStateChanged(auth, user => {
+  const box = document.getElementById("status");
+  const bar = document.getElementById("topbar");
+  const emailBox = document.getElementById("userEmail");
+
+  if (user) {
+    box.innerHTML = "Logged in as: " + user.email;
+
+    // show top bar
+    bar.style.display = "block";
+    emailBox.innerText = user.email;
+
+    // unlock content
+    document.getElementById("lock").style.display = "none";
+  } 
+  else {
+    box.innerHTML = "Not logged in";
+
+    // hide top bar
+    bar.style.display = "none";
+  }
+});
+
+
+// ===== 10 SECOND PREVIEW LOGIC =====
+setTimeout(() => {
+  if(!auth.currentUser){
+    document.getElementById("lock").style.display = "flex";
+  }
+}, 5000);
+function showToast(msg, type="success"){
+  const t = document.getElementById("toast");
+  t.innerText = msg;
+  t.className = "toast " + type;
+  t.style.display = "block";
+
+  setTimeout(() => {
+    t.style.display = "none";
+  }, 3000);
+}
+
+
+
+function getStore(){
+  return JSON.parse(localStorage.getItem("progress") || "{}");
+}
+
+function saveStore(data){
+  localStorage.setItem("progress", JSON.stringify(data));
+}
+
+function markDone(id){
+
+  const data = getStore();
+
+  // TOGGLE LOGIC
+  if(data[id]){
+    delete data[id];     // undo
+  }else{
+    data[id] = true;     // mark
+  }
+
+  saveStore(data);
+  loadProgress();
+  markTodayGreen();
+
+}
+
+
+function loadProgress(){
+  const data = getStore();
+
+  const heads = document.querySelectorAll("h2, h3");
+  let done = 0;
+
+  heads.forEach(h=>{
+    const id = h.id;
+    if(!id) return;
+
+    if(!h.querySelector(".markBtn")){
+      const b = document.createElement("button");
+      b.innerText = "✓ Mark as Read";
+      b.className = "markBtn";
+      b.onclick = (e)=> {
+function launchBubbles(btn, reverse=false){
+
+  const all = [sphere1, sphere2, sphere3];
+
+  all.forEach((bubble,i)=>{
+
+    setTimeout(()=>{
+
+      const rect = btn.getBoundingClientRect();
+      const target = sideProgress.getBoundingClientRect();
+
+      bubble.style.display="block";
+
+      // START & END positions depend on undo or not
+      let start = {
+        left: rect.left+"px",
+        top:  rect.top+"px"
+      };
+
+      let end = {
+        left: target.left+"px",
+        top:  target.top + 40 + i*5 + "px"
+      };
+
+      // IF UNDO → swap direction
+      if(reverse){
+        [start, end] = [end, start];
+      }
+
+      bubble.style.left = start.left;
+      bubble.style.top  = start.top;
+
+      bubble.animate([
+        { left:start.left, top:start.top, transform:"scale(1)" },
+        { left:end.left,   top:end.top,   transform:"scale(0.55)" }
+      ],{
+        duration:1600,
+        easing:"cubic-bezier(.22,.61,.36,1)"
+      });
+
+      setTimeout(()=> bubble.style.display="none",1600);
+
+    }, i*180);
+
+  });
+}
+
+const data = getStore();
+  const isUndo = data[id];   // already completed?
+
+  launchBubbles(e.target, isUndo);
+  markDone(id);
+};
+
+
+      h.appendChild(b);
+    }
+
+const btn = h.querySelector(".markBtn");
+
+if(data[id]){
+  // ===== COMPLETED STATE =====
+  done++;
+
+  h.style.color = "#2563eb";
+  h.style.opacity = "0.9";
+
+  if(btn){
+    btn.innerText = "✓ Completed";
+    btn.style.background = "#ffffff";
+    btn.style.color = "#aaa";
+    btn.style.border = "1px solid #ddd";
+  }
+
+}else{
+  // ===== NORMAL / UNDO STATE =====
+  h.style.color = "";        // back to default
+  h.style.opacity = "1";
+
+  if(btn){
+    btn.innerText = "✓ Mark as Read";
+    btn.style.background = "#0055ff";
+    btn.style.color = "#fff";
+    btn.style.border = "none";
+  }
+}
+
+
+  });
+
+  const percent = Math.round(done / heads.length * 100);
+
+  // update vertical bar
+  document.getElementById("fill").style.height = percent + "%";
+  document.getElementById("percentText").innerText = percent + "%";
+}
+
+
+
+
+window.$docsify.plugins = [
+  function(hook) {
+    hook.doneEach(function() {
+      loadProgress();
+      renderGrid(); 
+      updateStats(); 
+      enableSearch(); 
+    });
+  }
+];
+
+
+function markTodayGreen(){
+
+  const cal = JSON.parse(
+    localStorage.getItem("calendar") || "{}"
+  );
+
+  const today = new Date().toDateString();
+
+  cal[today] = true;
+
+  localStorage.setItem(
+    "calendar",
+    JSON.stringify(cal)
+  );
+
+  renderGrid();
+}
+
+function renderGrid(){
+
+  const store = JSON.parse(
+    localStorage.getItem("calendar") || "{}"
+  );
+
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  const days = new Date(year, month + 1, 0).getDate();
+
+  for(let d=1; d<=days; d++){
+
+    const date = new Date(year, month, d)
+                    .toDateString();
+
+    const box = document.createElement("div");
+
+    box.style.width="12px";
+    box.style.height="12px";
+    box.style.borderRadius="3px";
+
+    // ONLY LOGIC YOU WANTED
+    box.style.background =
+       store[date] ? "#22c55e" : "#e5e7eb";
+
+    grid.appendChild(box);
+  }
+}
+
+function trackTime(){
+
+  const key = "timeLog";
+  let log = JSON.parse(localStorage.getItem(key) || "{}");
+
+  const today = new Date().toDateString();
+
+  if(!log[today]) log[today] = 0;
+
+  // add 1 minute every minute while page open
+  log[today] += 1;
+
+  localStorage.setItem(key, JSON.stringify(log));
+}
+setInterval(()=>{
+  trackTime();
+  updateStats();
+}, 60000);
+
+
+
+
+function updateStats(){
+
+  const heads =
+    document.querySelectorAll("h2, h3").length;
+
+  const data = getStore();
+  const done = Object.keys(data).length;
+
+  document.getElementById("sTotal").innerText = heads;
+  document.getElementById("sDone").innerText = done;
+
+  const log = JSON.parse(
+     localStorage.getItem("timeLog") || "{}"
+  );
+
+  let week=0, month=0;
+
+  const now = new Date();
+
+  for(const d in log){
+    const dt = new Date(d);
+
+    const diff =
+      (now - dt) / (1000*60*60*24);
+
+    if(diff <= 7) week += log[d];
+    if(diff <= 30) month += log[d];
+  }
+
+  document.getElementById("weekTime").innerText =
+     week + " min";
+
+  document.getElementById("monthTime").innerText =
+     month + " min";
+}
+
+
+function enableSearch(){
+
+  const input = document.getElementById("searchInput");
+  if(!input) return;
+
+  input.oninput = function(){
+
+    const q = this.value.trim();
+
+    // remove old highlights
+    document.querySelectorAll(".highlight").forEach(e=>{
+      e.outerHTML = e.innerHTML;
+    });
+
+    if(!q) return;
+
+    const regex = new RegExp(`(${q})`, "gi");
+    let firstMatch = null;
+
+    // search only inside rendered markdown area
+    const area = document.querySelector(".markdown-section");
+    if(!area) return;
+
+    area.querySelectorAll("h1,h2,h3,p,li,code,td")
+      .forEach(el=>{
+
+        if(el.children.length === 0 &&
+           regex.test(el.innerText)){
+
+          el.innerHTML = el.innerHTML.replace(
+            regex,
+            "<span class='highlight'>$1</span>"
+          );
+
+          if(!firstMatch) firstMatch = el;
+        }
+      });
+
+    // scroll to first match
+    if(firstMatch){
+      firstMatch.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  };
+}
+</script>
+<!-- TOP BAR AFTER LOGIN -->
+<div id="topbar" style="
+  display:none;
+  position:fixed;
+  top:10px;
+  right:10px;
+  background:#fff;
+  padding:8px 12px;
+  border-radius:8px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  font-size:14px;
+  z-index:999;
+">
+  <span id="userEmail"></span>
+  <button onclick="logout()" style="
+    margin-left:8px;
+    border:none;
+    background:#ef4444;
+    color:white;
+    padding:4px 8px;
+    border-radius:6px;
+    cursor:pointer;
+  ">
+    Logout
+  </button>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="sphere1" class="sphere"></div>
+<div id="sphere2" class="sphere"></div>
+<div id="sphere3" class="sphere"></div>
+
+
+
+</body>
+</html>
