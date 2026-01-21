@@ -15,7 +15,7 @@
   --base-background-color: #ffffff;
   --base-color: #24292e;
   --heading-color: #24292e;
-  --sidebar-background: #f8f8f8;
+  --sidebar-background: #e4dede;
   --code-background: #f6f8fa;
 }
 
@@ -398,6 +398,7 @@ window.login = () => {
 window.logout = () => signOut(auth);
 
 // ===== SHOW USER STATUS =====
+// ===== SHOW USER STATUS =====
 onAuthStateChanged(auth, user => {
   const box = document.getElementById("status");
   const bar = document.getElementById("topbar");
@@ -408,24 +409,43 @@ onAuthStateChanged(auth, user => {
 
     // show top bar
     bar.style.display = "block";
-    // show only first 8 chars + ...
-const short = user.email.substring(0, 8) + "...";
-emailBox.innerText = short;
 
+    // helper for initials
+    function getInitials(email){
+      return email
+        .split("@")[0]
+        .split(/[._-]/)
+        .map(w => w[0])
+        .join("")
+        .substring(0,2)
+        .toUpperCase();
+    }
+
+    // 📱 Mobile → initials
+    if (window.innerWidth <= 768) {
+      emailBox.innerText = getInitials(user.email);
+      emailBox.classList.add("mobileInitial");
+    } 
+    // 💻 Desktop → short email
+    else {
+      const short = user.email.substring(0, 8) + "...";
+      emailBox.innerText = short;
+      emailBox.classList.remove("mobileInitial");
+    }
 
     // unlock content
     document.getElementById("lock").style.display = "none";
   } 
   else {
     box.innerHTML = "Not logged in";
-
-    // hide top bar
     bar.style.display = "none";
+    emailBox.innerText = "";
   }
 });
 
 
-// ===== 10 SECOND PREVIEW LOGIC =====
+
+// ===== 5 SECOND PREVIEW LOGIC =====
 setTimeout(() => {
   if(!auth.currentUser){
     document.getElementById("lock").style.display = "flex";
@@ -793,20 +813,20 @@ function loadDiscussion(){
 <!-- TOP BAR AFTER LOGIN -->
 <div id="topbar" style="
   display:none;
-  position:fixed;
+  position: fixed;
   top:10px;
-  right:10px;
-  background:#fff;
+  right:5px;
+  background:none;
   padding:8px 12px;
   border-radius:8px;
   box-shadow:0 4px 12px rgba(0,0,0,0.1);
-  font-size:14px;
+  font-size:8px;
   z-index:999;
 ">
 
   <span id="userEmail"></span>
   <button onclick="logout()" style="
-    margin-left:8px;
+    margin-left:2px;
     border:none;
     background:#ef4444;
     color:white;
@@ -814,7 +834,7 @@ function loadDiscussion(){
     border-radius:6px;
     cursor:pointer;
   ">
-    Logout
+    ➜]
   </button>
 </div>
 
@@ -830,9 +850,11 @@ setInterval(()=>{
   if(!btn) return;
 
   if(document.body.classList.contains("close")){
-    btn.innerText = "❯";   // sidebar closed
+        btn.innerText = "❯";   // sidebar closed
+
   }else{
-    btn.innerText = "❮";   // sidebar open
+              btn.innerHTML = `<img src="sidebarout.png" class="toggle-img" alt="close sidebar">`;
+
   }
 
 }, 500);
