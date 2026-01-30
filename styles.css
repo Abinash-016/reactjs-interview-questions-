@@ -76,7 +76,11 @@ h2, h3{
 
 
 /* smooth everything */
-*{ scroll-behavior:smooth }
+/* Disable smooth scroll for Docsify anchor jumps */
+html:has(.markdown-section){
+  scroll-behavior: auto !important;
+}
+
 
 /* nicer inputs */
 input, textarea{
