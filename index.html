@@ -884,24 +884,43 @@ function renderGrid(){
   }
 }
 
-function trackTime(){
+const key = "timeLog";
+let log = JSON.parse(localStorage.getItem(key) || "{}");
+const today = new Date().toDateString();
 
-  const key = "timeLog";
-  let log = JSON.parse(localStorage.getItem(key) || "{}");
+if (!log[today]) log[today] = 0;
 
-  const today = new Date().toDateString();
+let intervalId = null;
 
-  if(!log[today]) log[today] = 0;
-
-  // add 1 minute every minute while page open
+function trackTime() {
   log[today] += 1;
-
   localStorage.setItem(key, JSON.stringify(log));
-}
-setInterval(()=>{
-  trackTime();
   updateStats();
-}, 60000);
+}
+
+function startTracking() {
+  if (!intervalId) {
+    intervalId = setInterval(trackTime, 60000);
+  }
+}
+
+function stopTracking() {
+  clearInterval(intervalId);
+  intervalId = null;
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    startTracking();
+  } else {
+    stopTracking();
+  }
+});
+
+// start immediately if tab is already visible
+if (document.visibilityState === "visible") {
+  startTracking();
+}
 
 
 
