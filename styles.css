@@ -295,3 +295,35 @@ transform: rotate(5deg)}
 .sidebar-toggle{ margin-top: 100px; 
 transform: rotate(5deg)}
 }
+
+.highlight{
+  background:#fff176;
+  padding:2px 4px;
+  border-radius:4px;
+}
+
+.highlight.active{
+  background:#ffca28;
+  box-shadow:0 0 8px rgba(255,193,7,.7);
+}
+.droplet{
+  position:absolute;
+  width:4px;
+  height:4px;
+  background:#76bdff;
+  border-radius:50%;
+  opacity:.8;
+  pointer-events:none;
+  animation:dropOut .8s ease-out forwards;
+}
+
+@keyframes dropOut{
+  0%{
+    transform:translateX(0) translateY(0);
+    opacity:1;
+  }
+  100%{
+    transform:translateX(var(--x)) translateY(-12px);
+    opacity:0;
+  }
+}

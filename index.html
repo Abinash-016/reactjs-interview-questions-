@@ -138,22 +138,53 @@
   background:#eee;
   border-radius:20px;
   z-index:999;
+  overflow:visible;        /* important */
 }
 
 #fill{
+  position:absolute;
+  bottom:0;
+  left:0;
   width:100%;
   height:0%;
-  background:#22c55e;   /* green */
   border-radius:20px;
+  overflow:hidden;
   transition:height .5s ease;
+
+  background:
+    radial-gradient(circle at 50% 120%, #4aa3ff 40%, transparent 41%),
+    radial-gradient(circle at 30% 120%, #76bdff 35%, transparent 36%),
+    radial-gradient(circle at 70% 120%, #76bdff 35%, transparent 36%),
+    linear-gradient(to top, #4aa3ff, #76bdff);
+  
+  background-size:200% 200%;
+  animation:waveMove 4s linear infinite;
 }
+@keyframes waveMove{
+  0%{
+    background-position:0% 100%;
+  }
+  100%{
+    background-position:100% 0%;
+  }
+}
+
+
+
+
 
 #percentText{
   position:absolute;
-  bottom:-22px;
-  left:-8px;
+  bottom:-28px;            /* slightly lower */
+  left:50%;
+  transform:translateX(-50%);
   font-size:12px;
+  font-weight:600;
+  color:#2563eb;
+  white-space:nowrap;
 }
+
+
 
 /* click animation */
 @keyframes wave{
@@ -401,6 +432,24 @@ if (!location.hash) {
     style="padding:6px 10px;border-radius:8px;border:1px solid #ddd;">
 </div>
 
+<div id="searchNav" style="
+  display:none;
+  position:fixed;
+  top:70px;
+  right:20px;
+  background:white;
+  padding:6px 10px;
+  border-radius:8px;
+  box-shadow:0 4px 12px rgba(0,0,0,.15);
+  font-size:13px;
+  z-index:9999;
+">
+  <button id="prevHit">⬆</button>
+  <span id="hitCount">0/0</span>
+  <button id="nextHit">⬇</button>
+</div>
+
+
 <div class="topLogo">
   <img src="app-logo.png" alt="logo">
 </div>
@@ -568,6 +617,7 @@ function markDone(id){
   saveStore(data);
   loadProgress();
   markTodayGreen();
+  leakWater();
 
 }
 
@@ -665,6 +715,27 @@ setTimeout(()=>{
 
   });
 }
+
+function leakWater(){
+  const fill = document.getElementById("fill");
+  if(!fill || fill.offsetHeight < 20) return;
+
+  const d = document.createElement("div");
+  d.className = "droplet";
+
+  // random side escape
+  const side = Math.random() > 0.5 ? 0 : fill.offsetWidth - 4;
+  d.style.left = side + "px";
+  d.style.bottom = fill.offsetHeight + "px";
+
+  const dx = side === 0 ? "-8px" : "8px";
+  d.style.setProperty("--x", dx);
+
+  fill.appendChild(d);
+
+  setTimeout(()=>d.remove(),800);
+}
+
 
 function spawnDroplets(x, y){
   const count = 10; // number of droplets
@@ -872,32 +943,40 @@ function updateStats(){
 }
 
 
+let hits = [];
+let currentIndex = 0;
+
 function enableSearch(){
 
   const input = document.getElementById("searchInput");
+  const nav = document.getElementById("searchNav");
+  const counter = document.getElementById("hitCount");
+
   if(!input) return;
 
   input.oninput = function(){
 
     const q = this.value.trim();
 
-    // remove old highlights
+    // clear old highlights
     document.querySelectorAll(".highlight").forEach(e=>{
       e.outerHTML = e.innerHTML;
     });
 
-    if(!q) return;
+    hits = [];
+    currentIndex = 0;
+
+    if(!q){
+      nav.style.display="none";
+      return;
+    }
 
     const regex = new RegExp(`(${q})`, "gi");
-    let firstMatch = null;
-
-    // search only inside rendered markdown area
     const area = document.querySelector(".markdown-section");
     if(!area) return;
 
     area.querySelectorAll("h1,h2,h3,p,li,code,td")
       .forEach(el=>{
-
         if(el.children.length === 0 &&
            regex.test(el.innerText)){
 
@@ -905,20 +984,50 @@ function enableSearch(){
             regex,
             "<span class='highlight'>$1</span>"
           );
-
-          if(!firstMatch) firstMatch = el;
         }
       });
 
-    // scroll to first match
-    if(firstMatch){
-      firstMatch.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-      });
+    hits = Array.from(document.querySelectorAll(".highlight"));
+
+    if(hits.length > 0){
+      nav.style.display="block";
+      updateActive();
+    }else{
+      nav.style.display="none";
     }
+
+    counter.innerText = `${currentIndex+1}/${hits.length}`;
   };
 }
+
+function updateActive(){
+  hits.forEach(h=>h.classList.remove("active"));
+  const el = hits[currentIndex];
+  if(!el) return;
+
+  el.classList.add("active");
+
+  el.scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
+
+  document.getElementById("hitCount").innerText =
+    `${currentIndex+1}/${hits.length}`;
+}
+
+document.getElementById("nextHit").onclick = ()=>{
+  if(hits.length === 0) return;
+  currentIndex = (currentIndex+1) % hits.length;
+  updateActive();
+};
+
+document.getElementById("prevHit").onclick = ()=>{
+  if(hits.length === 0) return;
+  currentIndex = (currentIndex-1 + hits.length) % hits.length;
+  updateActive();
+};
+
 function loadDiscussion(){
 
   const area = document.querySelector(".markdown-section");
