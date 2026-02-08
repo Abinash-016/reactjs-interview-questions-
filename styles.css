@@ -47,17 +47,18 @@ h2, h3{
 
 /* Progress bar glass */
 #sideProgress{
-  background:rgba(255,255,255,.6);
+  background:rgba(0, 0, 0, 0.5);
   backdrop-filter:blur(8px);
   border:1px solid #e2e8f0;
 }
 
 /* Calendar grid modern */
-#calendarBox, #statsBox{
-  background:rgba(255,255,255,.7);
-  backdrop-filter:blur(10px);
-  border:1px solid #e2e8f0;
+#calendarBox, #statsBox {
+  background: rgba(255, 255, 255, 0);  /* semi transparent */
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
 }
+
 
 /* Discussion */
 #giscusBox{
